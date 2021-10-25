@@ -13,14 +13,14 @@ public class FloorController : MonoBehaviour
     private bool lerpColor = false;
 
     [SerializeField]
-    private float duration = 0.6f;
+    private float duration = 0.5f;
 
     private float t = 0f;
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
-        mr = GetComponent<MeshRenderer>();
-        mr.material.color = Color.white;
+        mr = GetComponentInChildren<MeshRenderer>();
+        mr.materials[0].color = Color.white;
     }
 
     private void Update()
@@ -29,7 +29,7 @@ public class FloorController : MonoBehaviour
         {
             t += Time.deltaTime / duration;
             
-            mr.material.color = lerpedColor;
+            mr.materials[0].color = lerpedColor;
             lerpedColor = Color.Lerp(Color.white, Color.red, t);
             StartCoroutine(StartFloorFall());
         }
@@ -45,7 +45,7 @@ public class FloorController : MonoBehaviour
 
     IEnumerator StartFloorFall()
     {
-        yield return new WaitForSeconds(0.6f);
+        yield return new WaitForSeconds(0.5f);
         rb.isKinematic = false;
         rb.useGravity = true;
     }
