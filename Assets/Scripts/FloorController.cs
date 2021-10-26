@@ -16,6 +16,9 @@ public class FloorController : MonoBehaviour
     private float duration = 0.5f;
 
     private float t = 0f;
+
+    public LevelManager levelManager;
+    private bool canInteractWithPlayer = false;
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -33,11 +36,13 @@ public class FloorController : MonoBehaviour
             lerpedColor = Color.Lerp(Color.white, Color.red, t);
             StartCoroutine(StartFloorFall());
         }
+
+        canInteractWithPlayer = levelManager.hasPlayerTouchedTheScreen;
     }
 
     private void OnCollisionEnter(Collision other)
     {
-        if (other.gameObject.CompareTag("Player"))
+        if (other.gameObject.CompareTag("Player") && canInteractWithPlayer)
         {
             lerpColor = true;
         }

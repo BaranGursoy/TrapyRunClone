@@ -18,15 +18,23 @@ public class OogieBoogieController : MonoBehaviour
     [SerializeField]
     private float speed = 3f;
 
+    public LevelManager levelManager;
+    private bool oogieBoogiesCanStartToRun = false;
+
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
     }
 
+    private void Update()
+    {
+        oogieBoogiesCanStartToRun = levelManager.hasPlayerTouchedTheScreen;
+    }
+
     private void FixedUpdate()
     {
-        if (!shouldStop)
+        if (!shouldStop && oogieBoogiesCanStartToRun)
         {
             movement = (Vector3.forward * speed);
         }

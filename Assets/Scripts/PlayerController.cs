@@ -11,17 +11,24 @@ public class PlayerController : MonoBehaviour
     private float speed = 5f;
     [SerializeField]
     private float turnSpeed = 10f;
-
-    public bool gameOver = false;
+    
     public Transform chopper;
+    
     private float jumpTpChopperSpeed = 5f;
 
     private Animator animator;
 
     private Vector3 movement = Vector3.zero;
 
+    [NonSerialized]
+    public bool gameOver = false;
+    [NonSerialized]
     public bool finished = false;
+    [NonSerialized]
     public bool isPlayerOnTheChopper = false;
+
+    public LevelManager levelManager;
+    private bool playerCanStartTheGame = false;
 
     private void Start()
     {
@@ -35,11 +42,13 @@ public class PlayerController : MonoBehaviour
         {
             transform.position = Vector3.MoveTowards(transform.position, chopper.position, jumpTpChopperSpeed*Time.deltaTime);
         }
+
+        playerCanStartTheGame = levelManager.hasPlayerTouchedTheScreen;
     }
 
     private void FixedUpdate()
     {
-        if (!gameOver && !finished)
+        if (!gameOver && !finished && playerCanStartTheGame)
         {
             movement = (transform.forward * speed);
             float rotateY = Input.GetAxis("Horizontal");
@@ -54,7 +63,6 @@ public class PlayerController : MonoBehaviour
 
         movement.y = rb.velocity.y;
         rb.velocity = movement;
-        
     }
 
     private void OnTriggerEnter(Collider other)
