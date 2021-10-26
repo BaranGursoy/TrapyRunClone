@@ -30,6 +30,9 @@ public class CameraController : MonoBehaviour
         {
             Vector3 targetPosition = target.position + offset;
             camTransform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref velocity, 0f);
+            
+            float cameraY = Mathf.Clamp(transform.position.y, -12f, 4.4f); // camera height restrictions in case of we're falling
+            camTransform.position = new Vector3(camTransform.position.x, cameraY, camTransform.position.z);
         }
         else
         {
