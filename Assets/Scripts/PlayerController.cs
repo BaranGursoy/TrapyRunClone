@@ -50,6 +50,7 @@ public class PlayerController : MonoBehaviour
     {
         if (!gameOver && !finished && playerCanStartTheGame)
         {
+            animator.SetBool("StartGame", true);
             movement = (transform.forward * speed);
             float rotateY = Input.GetAxis("Horizontal");
             transform.Rotate(Input.GetAxis("Horizontal") * Vector3.up * turnSpeed);
