@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class CameraController : MonoBehaviour
@@ -14,16 +15,26 @@ public class CameraController : MonoBehaviour
     // This value will change at the runtime depending on target movement. Initialize with zero vector.
     private Vector3 velocity = Vector3.zero;
 
+    public PlayerController playerController;
+    
     private void Start()
     {
         offset = camTransform.position - target.position;
     }
+    
 
     private void LateUpdate()
     {
         // update position
-        Vector3 targetPosition = target.position + offset;
-        camTransform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref velocity, 0f);
-        
+        if (!playerController.finished)
+        {
+            Vector3 targetPosition = target.position + offset;
+            camTransform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref velocity, 0f);
+        }
+        else
+        {
+            //transform.rotation = Quaternion.Lerp(Quaternion.identity, Quaternion.Euler(0f, 0f,0f), 1f);
+            transform.LookAt(playerController.gameObject.transform);
+        }
     }
 }
