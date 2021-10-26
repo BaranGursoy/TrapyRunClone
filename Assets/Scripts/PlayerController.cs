@@ -80,6 +80,11 @@ public class PlayerController : MonoBehaviour
             other.gameObject.transform.GetChild(0).gameObject.SetActive(true);   // taking the hidden enemies and activating them when player
                                                                                 // passes the checkpoint
         }
+
+        if (other.gameObject.CompareTag("Fall"))
+        {
+            gameOver = true;
+        }
     }
 
     private void OnCollisionEnter(Collision other)
