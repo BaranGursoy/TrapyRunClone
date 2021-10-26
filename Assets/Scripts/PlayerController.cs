@@ -74,6 +74,12 @@ public class PlayerController : MonoBehaviour
             movement = Vector3.zero;
             animator.SetBool("Jump", true);
         }
+
+        if (other.gameObject.CompareTag("Checkpoint"))
+        {
+            other.gameObject.transform.GetChild(0).gameObject.SetActive(true);   // taking the hidden enemies and activating them when player
+                                                                                // passes the checkpoint
+        }
     }
 
     private void OnCollisionEnter(Collision other)
