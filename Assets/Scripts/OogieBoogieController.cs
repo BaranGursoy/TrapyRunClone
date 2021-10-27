@@ -36,7 +36,7 @@ public class OogieBoogieController : MonoBehaviour
     {
         if (!shouldStop && oogieBoogiesCanStartToRun)
         {
-            movement = (Vector3.forward * speed);
+            movement = (transform.forward * speed);
         }
         else
         {
@@ -52,12 +52,18 @@ public class OogieBoogieController : MonoBehaviour
         {
             transform.LookAt(other.gameObject.transform);
             rb.AddForce(transform.forward * 100f);
-            
-            //transform.LookAt(other.gameObject.transform);
-            //transform.position = Vector3.MoveTowards(transform.position, other.gameObject.transform.position, speed * Time.deltaTime);
-            
+
             animator.SetBool("Jump", true);
             StartCoroutine(StoppingTimer());
+        }
+
+        if (other.gameObject.CompareTag("RotationTrigger"))
+        {
+            if (transform.parent.gameObject.CompareTag("SideEnemies"))
+            {
+                Debug.Log("girdi");
+                StartCoroutine(RotateTimer());
+            }
         }
     }
 
@@ -73,5 +79,11 @@ public class OogieBoogieController : MonoBehaviour
     {
         yield return new WaitForSeconds(0.6f);
         shouldStop = true;
+    }
+
+    IEnumerator RotateTimer()
+    {
+        yield return new WaitForSeconds(0.5f);
+        transform.rotation = Quaternion.Euler((Vector3.forward));
     }
 }

@@ -21,7 +21,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 95d331b1fc2c61c4f866ef7f3a7185da, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -13.400001
+      value: -13.14
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 95d331b1fc2c61c4f866ef7f3a7185da, type: 3}
       propertyPath: m_LocalRotation.w
@@ -125,10 +125,10 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.079127565
+  m_Radius: 0.16836321
   m_Height: 1
   m_Direction: 1
-  m_Center: {x: -0.009055153, y: 0.53, z: 0}
+  m_Center: {x: -0.009055167, y: 0.53, z: -0.08923566}
 --- !u!114 &1233572148
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -141,6 +141,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd0a697ee07e7a44c9bf59325db5ab26, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 2
-  turnSpeed: 2
-  gameOver: 0
+  speed: 2.5
+  turnSpeed: 3
+  chopper: {fileID: 0}
+  levelManager: {fileID: 0}
