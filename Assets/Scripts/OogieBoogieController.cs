@@ -61,7 +61,6 @@ public class OogieBoogieController : MonoBehaviour
         {
             if (transform.parent.gameObject.CompareTag("SideEnemies"))
             {
-                Debug.Log("girdi");
                 StartCoroutine(RotateTimer());
             }
         }
