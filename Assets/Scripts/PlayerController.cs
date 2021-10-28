@@ -14,7 +14,7 @@ public class PlayerController : MonoBehaviour
     
     public Transform chopper;
     
-    private float jumpTpChopperSpeed = 5f;
+    private float jumpToChopperSpeed = 5f;
 
     private Animator animator;
 
@@ -29,7 +29,11 @@ public class PlayerController : MonoBehaviour
 
     public LevelManager levelManager;
     private bool playerCanStartTheGame = false;
-
+    
+    // FOR TOUCH CONTROL
+    private bool right;
+    private bool left;
+    // TOUCH CONTROL VARIABLES ENDED
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -40,9 +44,11 @@ public class PlayerController : MonoBehaviour
     {
         if (finished && !gameOver)
         {
-            transform.position = Vector3.MoveTowards(transform.position, chopper.position, jumpTpChopperSpeed*Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, chopper.position, jumpToChopperSpeed*Time.deltaTime);
         }
 
+        TouchMovement();
+        
         playerCanStartTheGame = levelManager.hasPlayerTouchedTheScreen;
     }
 
@@ -95,6 +101,32 @@ public class PlayerController : MonoBehaviour
             animator.SetBool("Dance", true);
             transform.SetParent(other.gameObject.transform);
             isPlayerOnTheChopper = true;
+        }
+    }
+    
+    private void TouchMovement()
+    {
+        if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved)
+        {
+            Touch finger = Input.GetTouch(0);
+
+            // RIGHT-LEFT MOVEMENT STARTED
+
+            if (finger.deltaPosition.x > 1.0f)
+            {
+                right = true;
+                left = false;
+            }
+
+            if (finger.deltaPosition.x < -1.0f)
+            {
+                right = false;
+                left = true;
+            }
+
+            transform.Rotate(finger.deltaPosition.x * Vector3.up * Time.deltaTime * turnSpeed);
+
+            // RIGHT-LEFT MOVEMENT ENDED
         }
     }
 }
