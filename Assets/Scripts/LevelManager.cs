@@ -31,6 +31,7 @@ public class LevelManager : MonoBehaviour
 
     private void Start()
     {
+        Application.targetFrameRate = 60;
         textMeshPro.text += (SceneManager.GetActiveScene().buildIndex + 1).ToString();
     }
 
