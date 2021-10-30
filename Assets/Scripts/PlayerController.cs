@@ -20,13 +20,15 @@ public class PlayerController : MonoBehaviour
 
     private Vector3 movement = Vector3.zero;
 
+    // For level states
     [NonSerialized]
     public bool gameOver = false;
     [NonSerialized]
     public bool finished = false;
     [NonSerialized]
     public bool isPlayerOnTheChopper = false;
-
+    // Level states variables ended
+    
     public LevelManager levelManager;
     private bool playerCanStartTheGame = false;
     
@@ -34,6 +36,7 @@ public class PlayerController : MonoBehaviour
     private bool right;
     private bool left;
     // TOUCH CONTROL VARIABLES ENDED
+    
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -44,12 +47,13 @@ public class PlayerController : MonoBehaviour
     {
         if (finished && !gameOver)
         {
+            // Jumping movement to helicopter
             transform.position = Vector3.MoveTowards(transform.position, chopper.position, jumpToChopperSpeed*Time.deltaTime);
         }
 
         TouchMovement();
         
-        playerCanStartTheGame = levelManager.hasPlayerTouchedTheScreen;
+        playerCanStartTheGame = levelManager.hasPlayerTouchedTheScreen; // Did the user make the first touch?
     }
 
     private void FixedUpdate()
@@ -58,8 +62,11 @@ public class PlayerController : MonoBehaviour
         {
             animator.SetBool("StartGame", true);
             movement = (transform.forward * speed);
-            float rotateY = Input.GetAxis("Horizontal");
+            
+            // For playing with keyboard on play mode
+            float rotateY = Input.GetAxis("Horizontal"); 
             transform.Rotate(Input.GetAxis("Horizontal") * Vector3.up * turnSpeed);
+            // Keyboard movement control is ended
         }
 
         else if(gameOver)
@@ -68,7 +75,7 @@ public class PlayerController : MonoBehaviour
             movement = Vector3.zero;
         }
 
-        movement.y = rb.velocity.y;
+        movement.y = rb.velocity.y; // For not to break gravity rules
         rb.velocity = movement;
     }
 
@@ -99,7 +106,7 @@ public class PlayerController : MonoBehaviour
         {
             transform.Rotate(0f, 180f, 0f);
             animator.SetBool("Dance", true);
-            transform.SetParent(other.gameObject.transform);
+            transform.SetParent(other.gameObject.transform); // For player to move with helicopter with the ending dance animation
             isPlayerOnTheChopper = true;
         }
     }
