@@ -5,135 +5,109 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    private Rigidbody rb;
+    [HideInInspector] public PlayerBaseState currentState;
 
-    [SerializeField]
-    private float speed = 5f;
-    [SerializeField]
-    private float turnSpeed = 10f;
+    [HideInInspector] public static Action PlayerFallEvent;
+    [HideInInspector] public static Action PlayerChopperEvent;
+    [HideInInspector] public static Action PlayerFinishEvent;
     
-    public Transform chopper;
+    [HideInInspector] public Rigidbody rb;
+    [HideInInspector] public Animator animator;
+    [HideInInspector] public PlayerMovement movement;
     
-    private float jumpToChopperSpeed = 5f;
+    [SerializeField] public Transform finishTarget;
 
-    private Animator animator;
+    private static readonly int Fall = Animator.StringToHash("Fall");
+    private static readonly int Run = Animator.StringToHash("Run");
+    private static readonly int Idle = Animator.StringToHash("Idle");
+    private static readonly int Jump = Animator.StringToHash("Jump");
+    private static readonly int Dance = Animator.StringToHash("Dance");
 
-    private Vector3 movement = Vector3.zero;
+    private void Awake()
+    {
+        InitComponents();
+    }
 
-    // For level states
-    [NonSerialized]
-    public bool gameOver = false;
-    [NonSerialized]
-    public bool finished = false;
-    [NonSerialized]
-    public bool isPlayerOnTheChopper = false;
-    // Level states variables ended
-    
-    public LevelManager levelManager;
-    private bool playerCanStartTheGame = false;
-    
-    // FOR TOUCH CONTROL
-    private bool right;
-    private bool left;
-    // TOUCH CONTROL VARIABLES ENDED
-    
     private void Start()
     {
-        rb = GetComponent<Rigidbody>();
-        animator = GetComponent<Animator>();
+        currentState = new PlayerIdleState(this);
     }
 
     private void Update()
     {
-        if (finished && !gameOver)
-        {
-            // Jumping movement to helicopter
-            transform.position = Vector3.MoveTowards(transform.position, chopper.position, jumpToChopperSpeed*Time.deltaTime);
-        }
-
-        TouchMovement();
-        
-        playerCanStartTheGame = levelManager.hasPlayerTouchedTheScreen; // Did the user make the first touch?
+       currentState.Update(this);
     }
 
     private void FixedUpdate()
     {
-        if (!gameOver && !finished && playerCanStartTheGame)
-        {
-            animator.SetBool("StartGame", true);
-            movement = (transform.forward * speed);
-            
-            // For playing with keyboard on play mode
-            float rotateY = Input.GetAxis("Horizontal"); 
-            transform.Rotate(Input.GetAxis("Horizontal") * Vector3.up * turnSpeed);
-            // Keyboard movement control is ended
-        }
+        currentState.FixedUpdate(this);
+    }
 
-        else if(gameOver)
-        {
-            animator.SetBool("Fall", true);
-            movement = Vector3.zero;
-        }
-
-        movement.y = rb.velocity.y; // For not to break gravity rules
-        rb.velocity = movement;
+    private void OnDestroy()
+    {
+        PlayerChopperEvent = null;
+        PlayerFallEvent = null;
+        PlayerFinishEvent = null;
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Finish"))
-        {
-            finished = true;
-            movement = Vector3.zero;
-            animator.SetBool("Jump", true);
-        }
-
-        if (other.gameObject.CompareTag("Checkpoint"))
-        {
-            other.gameObject.transform.GetChild(0).gameObject.SetActive(true);   // taking the hidden enemies and activating them when player
-                                                                                // passes the checkpoint
-        }
-
-        if (other.gameObject.CompareTag("Fall"))
-        {
-            gameOver = true;
-        }
+        currentState.OnTriggerEnter(this, other);
     }
 
     private void OnCollisionEnter(Collision other)
     {
-        if (other.gameObject.CompareTag("Chopper"))
-        {
-            transform.Rotate(0f, 180f, 0f);
-            animator.SetBool("Dance", true);
-            transform.SetParent(other.gameObject.transform); // For player to move with helicopter with the ending dance animation
-            isPlayerOnTheChopper = true;
-        }
+        currentState.OnCollisionEnter(this, other);
+    }
+
+    public void OnChopperEvent(Transform other)
+    {
+        transform.Rotate(0f, 180f, 0f);
+        animator.Play(Dance);
+        transform.SetParent(other.gameObject.transform); // For player to move with helicopter with the ending dance animation
+        PlayerChopperEvent?.Invoke();
+    }
+
+    public void OnFinishEvent()
+    {
+        PlayerFinishEvent?.Invoke();
+    }
+
+    public void OnFallEvent()
+    {
+        PlayerFallEvent?.Invoke();
     }
     
-    private void TouchMovement()
+    private void InitComponents()
     {
-        if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved)
-        {
-            Touch finger = Input.GetTouch(0);
-
-            // RIGHT-LEFT MOVEMENT STARTED
-
-            if (finger.deltaPosition.x > 1.0f)
-            {
-                right = true;
-                left = false;
-            }
-
-            if (finger.deltaPosition.x < -1.0f)
-            {
-                right = false;
-                left = true;
-            }
-
-            transform.Rotate(finger.deltaPosition.x * Vector3.up * Time.deltaTime * turnSpeed);
-
-            // RIGHT-LEFT MOVEMENT ENDED
-        }
+        rb = GetComponent<Rigidbody>();
+        animator = GetComponent<Animator>();
+        movement = GetComponent<PlayerMovement>();
     }
+
+    public void PlayIdleAnimation()
+    {
+        animator.Play(Idle);
+    }
+    
+    public void PlayRunAnimation()
+    {
+        animator.Play(Run);
+    }
+    
+    public void PlayFallAnimation()
+    {
+        animator.Play(Fall);
+    }
+    
+    public void PlayJumpAnimation()
+    {
+        animator.Play(Jump);
+    }
+    
+    public void PlayDanceAnimation()
+    {
+        animator.Play(Dance);
+    }
+    
 }
