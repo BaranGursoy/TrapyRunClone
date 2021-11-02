@@ -33,6 +33,7 @@ public class LevelManager : MonoBehaviour
     {
         Application.targetFrameRate = 60;
         textMeshPro.text += (SceneManager.GetActiveScene().buildIndex + 1).ToString();
+        SignUpEvents();
     }
 
     private void Update()
@@ -41,16 +42,6 @@ public class LevelManager : MonoBehaviour
         {
             startingUI.SetActive(false);
             hasPlayerTouchedTheScreen = true;
-        }
-
-        if (playerController.gameOver)
-        {
-            StartCoroutine(ShowButton());
-        }
-
-        if (playerController.finished)
-        {
-            StartCoroutine(ShowEndingButtons());
         }
     }
 
@@ -63,6 +54,22 @@ public class LevelManager : MonoBehaviour
     {
         int nextScene = (SceneManager.GetActiveScene().buildIndex + 1) % SceneManager.sceneCountInBuildSettings;
         SceneManager.LoadScene(nextScene);
+    }
+
+    private void SignUpEvents()
+    {
+        PlayerController.PlayerFallEvent += StartShowButton;
+        PlayerController.PlayerChopperEvent += StartShowEndingButtons;
+    }
+
+    private void StartShowButton()
+    {
+        StartCoroutine(ShowButton());
+    }
+    
+    private void StartShowEndingButtons()
+    {
+        StartCoroutine(ShowEndingButtons());
     }
 
     IEnumerator ShowButton()

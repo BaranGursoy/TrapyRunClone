@@ -141,7 +141,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd0a697ee07e7a44c9bf59325db5ab26, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 2.5
-  turnSpeed: 3
-  chopper: {fileID: 0}
-  levelManager: {fileID: 0}
+  rb: {fileID: 0}
+  animator: {fileID: 0}
+  movement: {fileID: 0}
+  finishTarget: {fileID: 0}
+--- !u!114 &771821180
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5075399649323371155}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbfbb25a3a7975a4888b83ebb77a818b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  movementSpeed: 3
+  rotationSpeed: 2
+  finishSpeed: 5

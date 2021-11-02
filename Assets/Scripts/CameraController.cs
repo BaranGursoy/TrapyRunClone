@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 public class CameraController : MonoBehaviour
@@ -20,24 +21,45 @@ public class CameraController : MonoBehaviour
     private void Start()
     {
         offset = camTransform.position - target.position;
+        SignUpEvents();
+        StartControl();
+    }
+
+    private void SignUpEvents()
+    {
+        PlayerController.PlayerFinishEvent += StartFinishControl;
+    }
+
+    private void StartFinishControl()
+    {
+        StopAllCoroutines();
+        StartCoroutine(FinishControl());
+    }
+
+    private void StartControl()
+    {
+        StartCoroutine(Control());
+    }
+
+    private IEnumerator FinishControl()
+    {
+        while (true)
+        {
+            transform.LookAt(playerController.gameObject.transform);
+            yield return null;
+        }  
     }
     
-
-    private void LateUpdate()
+    private IEnumerator Control()
     {
-        // update position
-        if (!playerController.finished)
+        while (true)
         {
             Vector3 targetPosition = target.position + offset;
             camTransform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref velocity, 0f);
             
             float cameraY = Mathf.Clamp(transform.position.y, -12f, 4.4f); // camera height restrictions in case of we're falling
             camTransform.position = new Vector3(camTransform.position.x, cameraY, camTransform.position.z);
-        }
-        else
-        {
-            //transform.rotation = Quaternion.Lerp(Quaternion.identity, Quaternion.Euler(0f, 0f,0f), 1f);
-            transform.LookAt(playerController.gameObject.transform);
-        }
+            yield return null;
+        }  
     }
 }

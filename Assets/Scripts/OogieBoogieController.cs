@@ -70,7 +70,7 @@ public class OogieBoogieController : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            playerController.gameOver = true;
+            playerController.currentState = new PlayerFallState(playerController);
         }
     }
 
